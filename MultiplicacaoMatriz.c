@@ -15,7 +15,7 @@ int main(int argc, char* argv[]){
     FILE *descritorArquivo;
     size_t ret;
     // Checar se a entrada foi correta 
-    if(argc!=3){
+    if(argc!=4){
         printf("Erro nas entradas do arquivo\n");
         return 2;
     }
@@ -86,14 +86,15 @@ int main(int argc, char* argv[]){
     if(!saida){
         printf("Erro Alocacao saida\n");
         return 1;
-    }   
-    
-      for (int i = 0; i < linha1;i++){
+    }
+    // Inicializa a matriz saida com 0 para garantir que não tenha um valor indesejado armazenado previamente nele
+    for (int i = 0; i < linha1; i++)
+    {
         for (int j = 0; j < coluna2;j++){
             *(saida + i*coluna2 +j) = 0.0f;
         }
     }
-    
+    // Multiplicação das matrizes
     for (int i = 0; i < linha1;i++){
         for (int j = 0; j < coluna2;j++){
             for (int k = 0; k < linha2;k++)
@@ -102,14 +103,30 @@ int main(int argc, char* argv[]){
             }
         }
     }
-    
+
     for (int i = 0; i < linha1;i++){
         for (int j = 0; j < coluna2;j++){
             printf("%f ",*(saida + i*coluna2 +j));
         }
         printf("\n");
     }
-        free(matriz1);
-        free(matriz2);
-        free(saida);
+    // Abre o arquivo para escrita
+    descritorArquivo = fopen(argv[3], "wb");
+    if(!descritorArquivo){
+        fprintf(stderr, "Erro na abertura da saida\n");
+        return 3;
+    }
+    //  Escreve no arquivo de saida as informações
+    ret = fwrite(&coluna1, sizeof(int), 1, descritorArquivo);
+    ret = fwrite(&linha2, sizeof(int), 1, descritorArquivo);
+    ret = fwrite(saida, sizeof(float), coluna1 * linha2, descritorArquivo);
+    if(ret!=coluna1*linha2){
+        fprintf(stderr, "Erro de escrita no arquivo\n");
+        return 5;
+    }
+    fclose(descritorArquivo);
+    free(matriz1);
+    free(matriz2);
+    free(saida);
+    return 0;
 }
