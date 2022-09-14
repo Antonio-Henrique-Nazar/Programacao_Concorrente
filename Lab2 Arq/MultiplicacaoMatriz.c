@@ -12,7 +12,7 @@ int main(int argc, char* argv[]){
     float *matriz1;
     float *matriz2;
     float *saida;
-    double inicio, fim, delta;
+    double inicio, fiminicializacao,fimprocessamento,fimfinalizacao, delta;
     FILE *descritorArquivo;
     size_t ret;
     GET_TIME(inicio);
@@ -96,6 +96,9 @@ int main(int argc, char* argv[]){
             *(saida + i*coluna2 +j) = 0.0f;
         }
     }
+    GET_TIME(fiminicializacao);
+    delta = fiminicializacao - inicio;
+    printf("Tempo de inicialização %lf segundos\n", delta);
     // Multiplicação das matrizes
     for (int i = 0; i < linha1;i++){
         for (int j = 0; j < coluna2;j++){
@@ -105,7 +108,9 @@ int main(int argc, char* argv[]){
             }
         }
     }
-
+    GET_TIME(fimprocessamento);
+    delta = fimprocessamento - fiminicializacao;
+    printf("Tempo de execucao total %lf segundos\n", delta);
     // Abre o arquivo para escrita
     descritorArquivo = fopen(argv[3], "wb");
     if(!descritorArquivo){
@@ -125,8 +130,8 @@ int main(int argc, char* argv[]){
     free(matriz1);
     free(matriz2);
     free(saida);
-    GET_TIME(fim);
-    delta = fim - inicio;
+    GET_TIME(fimfinalizacao);
+    delta = fimfinalizacao - fimprocessamento;
     printf("Tempo de execucao total %lf segundos\n", delta);
     return 0;
 }
