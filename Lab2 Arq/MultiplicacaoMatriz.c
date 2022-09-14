@@ -12,8 +12,10 @@ int main(int argc, char* argv[]){
     float *matriz1;
     float *matriz2;
     float *saida;
+    double inicio, fim, delta;
     FILE *descritorArquivo;
     size_t ret;
+    GET_TIME(inicio);
     // Checar se a entrada foi correta 
     if(argc!=4){
         printf("Erro nas entradas do arquivo\n");
@@ -104,12 +106,6 @@ int main(int argc, char* argv[]){
         }
     }
 
-    for (int i = 0; i < linha1;i++){
-        for (int j = 0; j < coluna2;j++){
-            printf("%f ",*(saida + i*coluna2 +j));
-        }
-        printf("\n");
-    }
     // Abre o arquivo para escrita
     descritorArquivo = fopen(argv[3], "wb");
     if(!descritorArquivo){
@@ -124,9 +120,13 @@ int main(int argc, char* argv[]){
         fprintf(stderr, "Erro de escrita no arquivo\n");
         return 5;
     }
+
     fclose(descritorArquivo);
     free(matriz1);
     free(matriz2);
     free(saida);
+    GET_TIME(fim);
+    delta = fim - inicio;
+    printf("Tempo de execucao total %lf segundos\n", delta);
     return 0;
 }
